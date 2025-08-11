@@ -1,5 +1,11 @@
 # FOREST 4.0
 
+[![CI](https://github.com/dariuszdubis-collab/forest-4.0/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dariuszdubis-collab/forest-4.0/actions/workflows/ci.yml)
+[![Docker](https://github.com/dariuszdubis-collab/forest-4.0/actions/workflows/docker-build.yml/badge.svg?branch=main)](https://github.com/dariuszdubis-collab/forest-4.0/actions/workflows/docker-build.yml)
+[![CodeQL](https://github.com/dariuszdubis-collab/forest-4.0/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/dariuszdubis-collab/forest-4.0/actions/workflows/codeql.yml)
+
+# FOREST 4.0
+
 Modularny framework do backtestów strategii (przykład EMA cross), z dashboardem (Streamlit) i
 papierowym brokerem do trybu live.
 
@@ -13,3 +19,10 @@ poetry run pytest -q
 
 poetry run forest4-dashboard
 
+## Docker (dashboard)
+
+Aby uruchomić dashboard bez instalacji Pythona:
+
+```bash
+docker build -t forest4:latest .
+docker run --rm -p 8501:8501 forest4:latest
