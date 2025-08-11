@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "forest"
+version = "4.0.0"
+description = "FOREST 4.0 – modular backtesting framework (EMA cross sample), dashboard & paper broker"
+authors = ["Forest Team <forest@example.com>"]
+readme = "README.md"
+packages = [{ include = "forest", from = "src" }]
+license = "MIT"
+homepage = "https://example.com/forest"
+repository = "https://example.com/forest-repo"
+
+[tool.poetry.dependencies]
+python = ">=3.11,<3.13"
+numpy = "^1.26"
+pandas = "^2.2"
+pydantic = "^2.7"
+plotly = "^5.22"
+streamlit = "^1.36"
+joblib = "^1.4"
+structlog = "^24.1"
+pyyaml = "^6.0.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2"
+pytest-cov = "^5.0"
+ruff = "^0.5"
+mypy = "^1.10"
+black = "^24.4"
+
+[tool.poetry.scripts]
+forest-dashboard = "forest.dashboard.app:main"
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+ignore = ["E501"]
+
+[tool.black]
+line-length = 100
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
