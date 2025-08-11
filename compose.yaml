@@ -1,0 +1,8 @@
+services:
+  forest4:
+    image: ghcr.io/dariuszdubis-collab/forest-4.0:latest
+    container_name: forest4
+    ports:
+      - "8501:8501"
+    restart: unless-stopped
+
