@@ -1,5 +1,5 @@
+from forest4.live.router import PaperBroker
 
-from forest.live.router import PaperBroker
 
 def test_paper_broker_basic_flow():
     b = PaperBroker(fee_perc=0.0)
@@ -13,7 +13,9 @@ def test_paper_broker_basic_flow():
     r2 = b.market_order("SELL", 10)
     assert r2.status == "filled"
     assert b.position_qty() == 0
-    assert b.equity() > eq_before
+    # Po realizacji zysku equity nie powinno spaść względem equity z niezrealizowanym zyskiem
+    assert b.equity() >= eq_before
+
 
 def test_rejects_without_price_or_connection():
     b = PaperBroker()

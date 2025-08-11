@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import pandas as pd
 
-REQUIRED = ("open","high","low","close")
+REQUIRED = ("open", "high", "low", "close")
+
 
 def ensure_backtest_ready(df: pd.DataFrame) -> pd.DataFrame:
     if not isinstance(df, pd.DataFrame):
@@ -14,8 +15,14 @@ def ensure_backtest_ready(df: pd.DataFrame) -> pd.DataFrame:
     missing = [c for c in REQUIRED if c not in cols]
     if missing:
         raise ValueError(f"Missing required OHLC columns: {missing}")
-    out = df.rename(columns={cols["open"]:"open", cols["high"]:"high",
-                             cols["low"]:"low", cols["close"]:"close"}).copy()
+    out = df.rename(
+        columns={
+            cols["open"]: "open",
+            cols["high"]: "high",
+            cols["low"]: "low",
+            cols["close"]: "close",
+        }
+    ).copy()
     # Ensure datetime index
     if not isinstance(out.index, pd.DatetimeIndex):
         # try to parse index or common date column
