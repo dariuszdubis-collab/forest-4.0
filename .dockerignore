@@ -1,0 +1,13 @@
+.git
+.venv
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.parquet
+*.csv
+dist/
+build/
+.mypy_cache/
+.pytest_cache/
+.ipynb_checkpoints/

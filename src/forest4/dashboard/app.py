@@ -6,9 +6,10 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from ..backtest.engine import run_backtest
-from ..backtest.grid import run_grid
-from ..config import BacktestSettings
+# 💡 najważniejsze: importy BEZWZGLĘDNE
+from forest4.backtest.engine import run_backtest
+from forest4.backtest.grid import run_grid
+from forest4.config import BacktestSettings
 
 st.set_page_config(page_title="FOREST 4.0 Dashboard", layout="wide")
 
@@ -36,7 +37,7 @@ def heatmap(df: pd.DataFrame, metric: str, dd_lim: float | None = None):
     st.plotly_chart(fig, use_container_width=True)
 
 
-def main():
+def render():
     st.title("FOREST 4.0 – Backtest & Grid")
     tab1, tab2, tab3 = st.tabs(["Back-test", "Grid Runner", "Grid Heat-map"])
 
@@ -81,7 +82,16 @@ def main():
             )
             st.session_state["latest_grid"] = resdf
             st.success(f"Grid finished. Rows: {len(resdf)}")
-            st.dataframe(resdf)
+            st.dataframe(resdf, use_container_width=True)
+
+            # Pobierz wyniki jako CSV
+            csv_bytes = resdf.to_csv(index=False).encode("utf-8")
+            st.download_button(
+                "⬇️ Pobierz wyniki (CSV)",
+                data=csv_bytes,
+                file_name="grid_results.csv",
+                mime="text/csv",
+            )
 
     with tab3:
         st.header("Heat-map")
@@ -97,5 +107,22 @@ def main():
             st.info("Najpierw uruchom grid w zakładce 'Grid Runner'.")
 
 
+# Wrapper CLI: pozwala odpalić to jako `poetry run forest4-dashboard`
+def main() -> int:
+    import subprocess
+    from pathlib import Path
+
+    here = Path(__file__).resolve()
+    cmd = [
+        "streamlit",
+        "run",
+        str(here),
+        "--server.port=8501",
+        "--server.address=0.0.0.0",
+    ]
+    return subprocess.call(cmd)
+
+
+# Gdy Streamlit uruchamia ten plik bezpośrednio (tak jak w Dockerze), po prostu renderuj UI.
 if __name__ == "__main__":
-    main()
+    render()
