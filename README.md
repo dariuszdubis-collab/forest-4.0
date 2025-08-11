@@ -25,21 +25,4 @@ Aby uruchomić dashboard bez instalacji Pythona:
 
 ```bash
 docker build -t forest4:latest .
-feat/demo-ohlc
 docker run --rm -p 8501:8501 forest4:latest
-
-## Docker (GHCR) – Quickstart
-
-Najprościej przez Docker Compose:
-
-```bash
-docker compose up -d
-# -> http://localhost:8501
-
-### Demo danych (syntetyczny OHLC)
-```bash
-poetry run python -m forest4.examples.synthetic --out demo.csv --periods 365 --freq D
-# a następnie w Dashboardzie wgraj demo.csv (zakładka Back-test)
-=======
-docker run --rm -p 8501:8501 forest4:latest
-
