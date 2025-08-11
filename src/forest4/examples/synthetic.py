@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass
-from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -54,7 +53,9 @@ def generate_ohlc(
     open_ = close.shift(1).fillna(close.iloc[0])
     # amplituda knotów zależna od zmienności chwili
     wiggle = np.abs(vol * 2.5 * rng.standard_normal(periods))
-    high = pd.Series(np.maximum(open_.values, close.values) * (1.0 + wiggle), index=idx, name="high")
+    high = pd.Series(
+        np.maximum(open_.values, close.values) * (1.0 + wiggle), index=idx, name="high"
+    )
     low = pd.Series(np.minimum(open_.values, close.values) * (1.0 - wiggle), index=idx, name="low")
 
     df = pd.DataFrame(
@@ -68,7 +69,9 @@ def generate_ohlc(
     )
 
     # sanity: low <= min(open,close) <= max(open,close) <= high
-    bad = (df["low"] > df[["open", "close"]].min(axis=1)) | (df["high"] < df[["open", "close"]].max(axis=1))
+    bad = (df["low"] > df[["open", "close"]].min(axis=1)) | (
+        df["high"] < df[["open", "close"]].max(axis=1)
+    )
     if bad.any():
         raise RuntimeError("Generated inconsistent OHLC values")
 
@@ -86,7 +89,7 @@ def _build_parser() -> argparse.ArgumentParser:
     return p
 
 
-def main(argv: Optional[list[str]] = None) -> None:
+def main(argv: list[str] | None = None) -> None:
     args = _build_parser().parse_args(argv)
     df = generate_ohlc(
         start=args.start,
@@ -105,4 +108,3 @@ def main(argv: Optional[list[str]] = None) -> None:
 
 if __name__ == "__main__":
     main()
-

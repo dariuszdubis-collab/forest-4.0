@@ -26,4 +26,3 @@ def test_generate_ohlc_basic(tmp_path: Path):
     df2 = pd.read_csv(out, index_col=0, parse_dates=True)
     assert len(df2) == len(df)
     assert df2.index.equals(df.index)
-
