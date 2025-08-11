@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal
 
 import yaml
 from pydantic import BaseModel, Field, field_validator
@@ -37,7 +37,7 @@ class BacktestSettings(BaseModel):
         return normalize_timeframe(v)
 
     @classmethod
-    def from_file(cls, path: str | Path) -> "BacktestSettings":
+    def from_file(cls, path: str | Path) -> BacktestSettings:
         p = Path(path)
         if not p.exists():
             raise FileNotFoundError(path)

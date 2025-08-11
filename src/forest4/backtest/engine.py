@@ -1,18 +1,16 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
 import numpy as np
 import pandas as pd
 
 from ..config import BacktestSettings
-from ..core.indicators import ema, atr
-from ..utils.validate import ensure_backtest_ready
+from ..core.indicators import atr, ema
 from ..utils.log import log
+from ..utils.validate import ensure_backtest_ready
 from .risk import RiskManager
 from .tradebook import TradeBook
-from .trace import DecisionTrace
 
 
 @dataclass
@@ -51,8 +49,8 @@ def run_backtest(df: pd.DataFrame, settings: BacktestSettings) -> BacktestResult
     for ts, row in df.iterrows():
         price = float(row["close"])
         sig = int(row["signal"])
-        # mark-to-market equity each bar
-        risk.record_mark_to_market(price)
+        # mark-to-market equity each bar (ZMIANA: z ceny)
+        risk.mark_price(price)
 
         if risk.exceeded_max_dd():
             log.warning("max_dd_exceeded", time=str(ts), equity=risk.equity)
@@ -68,7 +66,11 @@ def run_backtest(df: pd.DataFrame, settings: BacktestSettings) -> BacktestResult
                 log.info("trade", action="SELL", time=str(ts), price=price)
             # open long on positive signal
             if sig > 0 and position == 0.0:
-                qty = risk.position_size(price=price, atr=float(row["atr"]), atr_multiple=settings.strategy.atr_multiple)
+                qty = risk.position_size(
+                    price=price,
+                    atr=float(row["atr"]),
+                    atr_multiple=settings.strategy.atr_multiple,
+                )
                 if qty > 0:
                     risk.buy(price=price, qty=qty)
                     tb.add(ts, price, qty, "BUY")
@@ -82,4 +84,9 @@ def run_backtest(df: pd.DataFrame, settings: BacktestSettings) -> BacktestResult
     roll_max = eq.cummax()
     dd = (eq - roll_max) / roll_max
     max_dd = float(dd.min()) if len(dd) else 0.0
-    return BacktestResult(equity_curve=eq, trades=tb.trades, final_equity=float(eq.iloc[-1]), max_drawdown=abs(max_dd))
+    return BacktestResult(
+        equity_curve=eq,
+        trades=tb.trades,
+        final_equity=float(eq.iloc[-1]),
+        max_drawdown=abs(max_dd),
+    )

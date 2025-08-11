@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import List
 
 
 @dataclass
@@ -16,7 +15,7 @@ class RiskManager:
     _cash: float = field(init=False)
     _position: float = field(default=0.0, init=False)  # qty
     _avg_price: float = field(default=0.0, init=False)
-    _equity_curve: List[float] = field(default_factory=list, init=False)
+    _equity_curve: list[float] = field(default_factory=list, init=False)
     _peak: float = field(init=False)
 
     def __post_init__(self):
@@ -28,8 +27,15 @@ class RiskManager:
     def equity(self) -> float:
         return self._equity_curve[-1]
 
-    def record_mark_to_market(self, price: float):
+    # NOWE: mark-to-market na podstawie CENY instrumentu
+    def mark_price(self, price: float):
         equity = self._cash + self._position * price
+        self._equity_curve.append(equity)
+        self._peak = max(self._peak, equity)
+
+    # ZACHOWANE: jeśli podajesz już EQUITY (jak w teście), użyj tej metody
+    def record_mark_to_market(self, equity: float):
+        equity = float(equity)
         self._equity_curve.append(equity)
         self._peak = max(self._peak, equity)
 
@@ -43,7 +49,7 @@ class RiskManager:
         risk_amount = self.equity * self.risk_per_trade
         unit_risk = atr * atr_multiple
         qty = risk_amount / unit_risk
-        # ensure we can afford it (very rough check)
+        # ensure we can afford it (bardzo zgrubna kontrola)
         max_qty_by_cash = max(0.0, self._cash / (price * (1 + self.fee_perc + self.slippage_perc)))
         return max(0.0, min(qty, max_qty_by_cash))
 

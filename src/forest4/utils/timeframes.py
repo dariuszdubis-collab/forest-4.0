@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 
 _ALIASES = {
@@ -16,7 +18,8 @@ _ALIASES = {
     "1min": "1m",
 }
 
-_VALID = {"1m","5m","15m","30m","1h","4h","1d","1w","1mo"}
+_VALID = {"1m", "5m", "15m", "30m", "1h", "4h", "1d", "1w", "1mo"}
+
 
 def normalize_timeframe(tf: str) -> str:
     if not isinstance(tf, str) or not tf:
@@ -29,11 +32,16 @@ def normalize_timeframe(tf: str) -> str:
     if m:
         num, unit = m.groups()
         unit = unit.lower()
-        if unit == "m": norm = f"{num}m"
-        elif unit == "h": norm = f"{num}h"
-        elif unit == "d": norm = f"{num}d"
-        elif unit == "w": norm = f"{num}w"
-        else: raise ValueError(f"Unsupported unit in timeframe: {tf}")
+        if unit == "m":
+            norm = f"{num}m"
+        elif unit == "h":
+            norm = f"{num}h"
+        elif unit == "d":
+            norm = f"{num}d"
+        elif unit == "w":
+            norm = f"{num}w"
+        else:
+            raise ValueError(f"Unsupported unit in timeframe: {tf}")
         # collapse common minutes/hours/days to a known set
         if norm in _VALID:
             return norm
