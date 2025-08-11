@@ -30,6 +30,9 @@ pre-commit = "^3.7"
 
 [tool.poetry.scripts]
 forest4-dashboard = "forest4.dashboard.app:main"
+forest4 = "forest4.cli:main"
+forest4-backtest = "forest4.cli:main_backtest"
+forest4-grid = "forest4.cli:main_grid"
 
 [tool.ruff]
 line-length = 100
