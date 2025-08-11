@@ -1,0 +1,40 @@
+name: Docker
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'Dockerfile'
+      - '.dockerignore'
+      - 'src/**'
+      - 'pyproject.toml'
+      - 'README.md'
+      - '.github/workflows/docker-build.yml'
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build image (local, no push)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          tags: forest4:ci
+
+      - name: Smoke test - python import
+        run: docker run --rm forest4:ci python -c "import forest4; print('ok')"
+
+      - name: Smoke test - CLI help
+        run: docker run --rm forest4:ci forest4-backtest --help
