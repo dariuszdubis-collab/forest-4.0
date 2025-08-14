@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "forest4"
-version = "4.0.2"
+version = "4.0.3"
 description = "FOREST 4.0 – modular backtesting framework (EMA cross sample), dashboard & paper broker"
 authors = ["Forest Team <forest@example.com>"]
 readme = "README.md"
